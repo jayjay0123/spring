@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ph_board">
+
+	<!-- 작성 -->
+	<insert id ="write" parameterType="hashMap" useGeneratedKeys="true" keyProperty="seq">
+		<![CDATA[
+		
+		insert into ph_board 
+		(title, writer, password, content, imgFile, thumbImg)
+		values
+		(#{title}, #{writer}, #{password}, #{content}, #{imgFile}, #{thumbImg})
+		
+		]]>
+	</insert>
+	
+	
+	<select id="read" resultType="com.my.zegna.BoardVO">
+		<![CDATA[
+		select * 
+		from ph_board
+		where seq= #{seq}
+		]]>
+	</select>
+	
+	<select id="list" resultType="com.my.zegna.BoardVO">
+		<![CDATA[
+		select seq, title, content, writer, imgFile, regDate, hit, thumbImg
+		from ph_board
+		where 1=1 
+		]]>
+		<if test="keyword !=null and keyword !=''">
+			and (content like CONCAT('%',#{keyword},'%') or title like CONCAT('%',#{keyword},'%') 
+			or writer like CONCAT('%',#{keyword},'%')) 
+		</if>
+		order by regDate desc
+	</select>
+	
+	<!-- 수정 --> 
+	<update id="update" parameterType="hashMap" >
+		<![CDATA[
+		update  ph_board
+		set		title = #{title},
+				content = #{content}, 
+				writer = #{writer}, 
+				imgFile= #{imgFile},
+				thumbImg= #{thumbImg}
+		where seq = #{seq}	
+		]]>	
+	</update>	
+	
+	<!-- 삭제 --> 
+	<delete id="delete" parameterType="hashMap">
+		<![CDATA[
+		delete from ph_board
+		where seq = #{seq}		
+		]]>	
+	</delete>
+	
+	<!-- 조회수 -->
+	<update id="hitUpdate" parameterType="int">
+		<![CDATA[
+		update  ph_board
+		set     hit = hit + 1
+		where   seq = #{seq}
+		]]>	
+	</update>
+	
+	
+	<!-- 게시물 총 갯수 -->
+	<select id="count" resultType="int">
+	<![CDATA[
+	 select count(seq) from ph_board
+	 ]]>	
+	</select>
+	
+	<!-- 게시물 목록 + 페이징 -->
+	<select id="listPage" parameterType="hashMap" resultType="com.my.zegna.BoardVO">
+	 <![CDATA[
+	 select
+	  seq, title, content, writer, imgFile, regDate, hit, thumbImg
+	 from ph_board
+	 order by seq desc
+	  limit #{displayPost}, #{postNum}
+	  ]]>
+	</select>
+	
+
+</mapper>
