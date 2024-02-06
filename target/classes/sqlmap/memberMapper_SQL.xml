@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tbl_member">
+	
+	<!-- 회원가입 -->
+	<insert id ="join" parameterType="hashMap" useGeneratedKeys="true" keyProperty="userId">
+		<![CDATA[
+		insert into tbl_member
+		(userId, userPass, userPassRe, userName, userGender, userEmail, userPhone, userAddr1, userAddr2, userAddr3, verify)
+		values
+		(#{userId}, #{userPass}, #{userPassRe}, #{userName}, #{userGender},  #{userEmail}, #{userPhone}, #{userAddr1}, #{userAddr2}, #{userAddr3}, 0)
+		]]>
+	</insert>
+	
+	<!-- 아이디 중복체크 -->
+	<select id="selectId" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		  FROM tbl_member
+		 WHERE userId = #{userId}
+	</select>
+	
+	<!-- 로그인 -->
+	<select id="login" resultType="com.my.zegna.MemberVO">
+		<![CDATA[
+		select * 
+		from tbl_member
+		where userId=#{userId}
+		]]>
+	</select>
+
+	<select id="mypage"  parameterType="hashMap" resultType="hashMap">
+		<![CDATA[
+		select userId, userPass, userPassRe, userName, userGender, userEmail, userPhone, userAddr1, userAddr2, userAddr3 
+		from tbl_member
+		where userId=#{userId}
+		]]>
+	</select>
+	
+	<update id="update" parameterType="hashMap">
+		<![CDATA[
+		update tbl_member set
+		userName = #{userName},
+		userPass = #{userPass},
+		userPassRe = #{userPassRe},
+		userEmail = #{userEmail}, 
+		userPhone = #{userPhone}, 
+		userAddr1 = #{userAddr1},
+		userAddr2 = #{userAddr2},
+		userAddr3 = #{userAddr3}
+		where userId = #{userId}
+		]]>	
+	</update>
+
+</mapper>
